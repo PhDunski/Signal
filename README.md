@@ -25,8 +25,6 @@ In addition, if you may have to use CMake (version >= 3.8 ) and Doxygen
 
 This project is developped on a basic -- but up to date -- debian *testing* (codename **buster**) distribution 
 
-In addition some tests have been done using a window 10 (64 bits) insallation.
-
 <a id="2.1"></a>
 ### Tested compilers
 On this day, the project has correctly been build and passed unit tests with: 
@@ -34,8 +32,6 @@ On this day, the project has correctly been build and passed unit tests with:
 	Gcc 7.3.0 (debian)
 	Gcc 8.1.0 (debian)
 	clang 6.0 (debian)
-	MinGW  (windows)
-	VisualStudio 2015 (windows)
 	
 <a id="2.2"></a>
 ### No mandatory tools
@@ -64,22 +60,22 @@ here his the structure of this directory
 
 ```
 
-        <root_dir>                     // main library root directory
-            |-> 3rdParty               // contains some 3rd party external libraries 
-            |                          // (mainely CATCH, which is used for unit test policy)
-            |-> doxygen                // contains doxygen documentation generator related files
-            |    |-> examples          // contains some (compilable) *.cpp files used exclusively
-            |                          // by doxygen to generate examples
-            |-> lib                    // contains the library source code
-            |    |-> Tools             // as possiblely part of a more general use (Tools) library
-            |        |                 // all Signal source files will live in its general use library directory
-            |        |->include        // contains all header files (only Signal.hpp for this project)
-            |-> tests                  // Contains files required for the unit test policy
-            |    |->Tools              // As part as a more general use (Tools)library, 
-            |    |    |                // all Signal source files will live in its general use library directory
-            |    |    |-> Signal       // all Signal unit tests related files are in them own subtree
-            |    |    |-> include      // contains specifics headers required for testing Signal library
-            |    |    |-> src          // contains specifics implementationf files for testing Signal library
+        <root_dir>                         // main library root directory
+            |-> 3rdParty                   // contains some 3rd party external libraries 
+            |                              // (mainely CATCH, which is used for unit test policy)
+            |-> doxygen                    // contains doxygen documentation generator related files
+            |    |-> examples              // contains some (compilable) *.cpp files used exclusively
+            |                              // by doxygen to generate examples
+            |-> lib                        // contains the library source code
+            |    |-> Tools                 // as possiblely part of a more general use (Tools) library
+            |    |   |                     // all Signal source files will live in its general use library directory
+            |    |   |->include            // contains all header files (only Signal.hpp for this project)
+            |-> tests                      // Contains files required for the unit test policy
+            |    |->Tools                  // As part as a more general use (Tools)library, 
+            |    |    |                    // all Signal source files will live in its general use library directory
+            |    |    |-> Signal           // all Signal unit tests related files are in them own subtree
+            |    |        |-> include      // contains specifics headers required for testing Signal library
+            |    |        |-> src          // contains specifics implementationf files for testing Signal library
 ```
 
 All "first level" (`<root_dir>`, `3rdParty`, `doxygen`, `lib` and `tests`)
