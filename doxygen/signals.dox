@@ -1,0 +1,240 @@
+/** @page signal_doc Un système de signaux et de slots
+  *
+  * @section signal_need un besoin de "communication transversale"
+  *
+  * Toutes les fonctionnalités de n'importe quel projet informatique sont confrontées
+  * à un besoin majeur et impératif : celui de pouvoir communiquer entre elles.
+  *
+  * En effet, toute les fonctionnalités que nous pourrons créer, aussi géniales
+  * qu'elles puissent être, ne jamais que par l'usage qui pourra en être fait.
+  *
+  * Mais, pour qu'une fonctionnalité puisse être utilsée -- et donc valoir la peine
+  * d'être développée -- il faut qu'elle soit en mesure de communiquer avec d'autres.
+  *
+  * La plupart des langages de programmation autorisent ce qui pourrait être désigner
+  * sous le terme de "communication verticale", en permettant à une "fonction appelante"
+  * de transmettre des paramètres aux fonctions auxquelles elle fait appel, et en
+  * permettant aux "fonctions appelées" de renvoyer le résultat de leur traitement
+  * à la fonction qui y a fait appel.
+  *
+  * Ces deux possibilités couvrent une énorme partie de l'ensemble des besoins
+  * de communication que l'on peut envisager dans de nombreux projets, mais il
+  * y reste néanmoins tout un ensemble des communications qui ne peut pas -- ou du moins,
+  * qui ne peut que difficilement -- entrer dans ce schéma de communication.
+  *
+  * Il arrive en effet régulièrement qu'une fonctionnalité quelconque de notre
+  * projet ait besoin d'être "tenue informée" des modifications apportées ou des
+  * étapes atteintes par d'autres fonctionnalités dont elles ne devraient a priori
+  * pas dépendre.
+  *
+  * Nous pouvons d'ailleurs envisager les choses du point de vue inverse, et nous
+  * dire que nous pouvons souhaiter permettre à une fonctionnalité de transmettre
+  * certaines informations à "différentes fonctionnalités" dont nous ignorons 
+  * tout, si ce n'est qu'elles seront intéressées par le fait d'être tenues au courant
+  * des modifications subies ou des étapes franchies.
+  *
+  * Nous entrons alors dans ce qu'il conviendrait d'appeler une logique de "communication
+  * transversale", dans le sens où la communication ne se fait plus entre une 
+  * fonction appelante et une fonction appelée, mais plutôt entre une "fonction exécutée"
+  * et ... "n'importe quelle fonctionnalité intéressée" par l'information.
+  *
+  * @section observer_limits Les limites du patron "observateur"
+  *
+  * Le GoF ne s'y est pas trompé, car il a clairement identifié un patron de 
+  * conception qui répond à ces besoins: le patron de conception @b observateur.
+  * 
+  * Cependant, ce patron de conception présente quelques limites dues à l'approche
+  * exclusivement orientée objet.  La principale étant que toutes les classes servant
+  * aussi bien d'observateur que d'élément observé vont -- a priori -- devoir hériter
+  * d'une classe de base, ce qui impose une dépendance forte de l'élément observé par 
+  * rapport à l'élément qui l'observe.
+  * 
+  * De plus, le SRP est difficile à respecter dans de telles conditions -- au 
+  * minimum en ce qui concerne l'élément observé -- car, si il doit s'occuper de
+  * signifier aux éléments qui l'observent qu'il a atteint une certaine étape ou
+  * qu'il a été modifié, cela représente déjà une responsabilité en soi, qui viendrait
+  * forcément en complément de la responsabilité "normal" que doit prendre l'élément
+  * observé.
+  *
+  * @section signal_solution La solution: un système de signaux et de slots.
+  *
+  * La solution pour éviter cette dépendance forte est de créer ce qu'il convient
+  * d'appeler un @b système @b de @b signaux @b et @b de @b slots.
+  *
+  * L'idée est de déléguer à un élément supplémentaire -- le @b signal -- la 
+  * responsabilité de signifier aux éléments qui l'observent qu'une valeur a été
+  * modifiée ou qu'une étape dans la logique a été atteinte, à charge pour les
+  * éléments qui souhaitent être notifiés de ce fait de s'enregistrer auprès du
+  * signal adéquat.
+  *
+  * De cette manière, le signal peut ne pas dépendre de la présence d'une fonction
+  * spécifique, mais plutôt de la présence d'une fonction présentant une signature
+  * spécifique, que l'on appelle généralement @em callback et qui prendra le nom 
+  * de @b slot dans le système à mettre en place.
+  *
+  * L'élément qui souhaite en observer un autre pourra alors connaître que le signal
+  * auquel il souhaite se connecter.
+  *
+  * De plus, le SRP s'en trouve bien mieux respecté, car l'élément observé n'a plus
+  * qu'à veiller à émettre le signal correspondant au moment opportun, sans même
+  * avoir à s'inquiéter de savoir s'il y a effectivement "quelque chose" qui est
+  * intéressé par le fait d'être prévenu de l'émission du signal.
+  *
+  * @section signal_usage Comment l'utiliser
+  *
+  * La présente implémentation du système de signaux et de slot est fournie sous
+  * la forme d'un unique fichier d'en-tête contenant l'ensemble des fonctionnalités
+  * nécessaires à son utilisation.
+  *
+  * Il suffit donc de s'assurer que le compilateur ira chercher dans le dossier
+  * dans lequel se trouve le fichier @c Signal.hpp et d'inclure ce dernier de manière
+  * tout à fait classique à l'aide de la directive @c #include @c &lt;Signal.hpp&gt;
+  * pour pouvoir en profiter.
+  *
+  * Toutes les fonctionnalités requises seront alors accessible dans l'espace de noms
+  * Tools, à savoir
+  *
+  * - la classe Tools::Connection destinée à représenter la connection qui existe
+  * entre un signal et un slot en particulier
+  * - la classe template Tools::Signal<typename ... Args> destinée à représenter
+  * n'importe quel type de signal pouvant être nécessaire.
+  * - L'alias de type Tools::Signal<typename ... Args>::slot_type qui représente
+  * la signature à laquelle doit correspondre le @em callback qui sera appelé lorsque
+  * le signal est émis.
+  * @sa @ref signal_conception
+  *
+  * @subsection sig_def Définir un signal
+  *
+  * Pour définir un signal, vous n'avez qu'à fournir l'ensemble des paramètes qui
+  * devront être transmis aux différents callbacks.  Cela peut donc prendre une
+  * forme aussi simple que 
+  * @include examples/define_signal.cpp 
+  *
+  * Bien sur, vous pouvez également utiliser des alias de types pour vous faciliter
+  * la vie.  Cela peut prendre une forme aussi simple que
+  * @include examples/alias_signal.cpp
+  * @subsubsection sig_member Définir un signal comme donnée membre
+  * Il n'y a bien sur strictement rien qui vous interdise de définir un signal 
+  * comme étant une donnée membre (statique ou non) d'une de vos classes ou de vos
+  * structures.
+  *
+  * Bien au contraire, cela s'avérera souvent particulièrement utile pour garantir
+  * le fait que seules les slots intéressés par les signaux émis par une instance
+  * particulière de l'élément observé seront effectivement appelés.
+  *
+  * Vous aurez alors le choix entre laisser le signal dans l'accessibilité publique,
+  * afin de vous permettre d'y accéder (entre autre afin d'y connecter les 
+  * différents slots) ou de le placer dans l'accessibilité privée en prenant alors
+  * soin d'exposer une fonction publique qui se chargera de déléguer la connexion
+  * au signal proprement dit.
+  * 
+  * Dans le premier cas, cela pourrait prendre une forme proche de
+  * @include examples/sig_member.cpp
+  * Dans le second cas, cela pourrait prendre une forme d'avantage proche de
+  * @include examples/sig_member2.cpp
+  *
+  * @note Les deux cas présentent des intérêts et des inconvénients, qu'il vous
+  * appartiendra d'évaluer selon les situations :
+  * - Le principal avantage de la première forme est qu'elle permet de limiter la
+  * dépendance entre l'élément observateur et l'élément observé à la seule connaissance
+  * du signal qui sera émis, mais son principal inconvénient est de laisser à 
+  * l'utilisateur de l'élément observé la possibilité de faire émettre le signal
+  * contre toute logique;
+  * - Le principal avantage de la deuxième forme proposée est de garantir que le
+  * signal ne sera émis que par les fonctions membres de l'élément observé, mais
+  * son principal inconvénient est que cela impose une dépendance accrue de 
+  * l'élément observateur envers l'élément observé.
+  *
+  * @note Il existe une @b troisième @b solution, susceptible de permettre d'avoir le
+  * meilleur des deux mondes, qui consisterait à placer le signal dans l'accesibilité
+  * privée afin de s'assurer que le signal ne sera pas émis en dehors de toute
+  * contrainte, et de transmettre la fonction de connexion comme paramètre à
+  * la fonction qui se chargera de connecter le slot au signal, de manière à limiter
+  * la connaissance de l'observateur au seul fait qu'il existe une fonction qui 
+  * permet de connecter le slot à un signal.
+  *
+  * @note Il ne m'appartient pas de décider quelle solution est la meilleure car
+  *       Cette décision doit être prise en fonction des circonstances
+  *
+  * @subsection sig_connect Connecter les slots
+  * 
+  * Le système de signaux et de slots nous offre un large éventail de possibilités
+  * de connexions.
+  *
+  * Il autorise en effet la connexion de n'importe quelle fonction libre, de 
+  * n'importe quelle fonction membre (qu'elle soit statique ou non) d'une classe
+  * et de n'importe quelle expression lambda aussi longtemps que la signature de
+  * la fonction destinée à servir de slot est respectée.
+  *
+  * Les @ref signal_conception ont cependant mis en évidence les @ref signal_difficulties
+  * mais ont apporté la @ref signal_solution .
+  *
+  * Chaque fois que nous voudrons connecter un slot à un signal, nous devront donc
+  * prendre soin de récupérer la Tools::Connection qui y sera associée.
+  * @subsubsection connect_free Connecter des fonctions libres
+  * La connection d'une fonctin libre pourra donc prendre une forme aussi simple 
+  * que
+  * @include examples/connect_free.cpp
+  * @subsubsection connect_static Connecter des fonctions membres statiques
+  * La connection d'une fonction membre statique de classe ou de structure 
+  * se fait de manière strictement similaire à celle d'une fonction libre et peut
+  * prendre la forme de
+  * @include examples/connect_static.cpp
+  * @subsubsection connect_lambda Connecter une expression lambda
+  * Depuis l'arrivée de C++11, nous disposons des expressions lambda, qui peuvent
+  * sans aucun problème servir de slot susceptible d'être connecté à un signal.
+  *
+  * Cela peut prendre une forme aussi simple que
+  * @include examples/connect_lambda.cpp
+  *
+  * En outre, elles fournissent une solution particulièrement simple et élégante
+  * lorsqu'il s'agit d'adapter les signatures du signal et du slot.  Cela peut prendre
+  * la forme de
+  * @include examples/connect_lambda2.cpp
+  *
+  * @subsubsection connect_members Connecter des fonctions membres.
+  *
+  * Il est tout à fait possible d'utiliser des fonctions membres de classes (ou 
+  * structure) de non statiques comme slot devant être connecté à un signal.
+  * 
+  * La grosse difficulté venant du fait que les fonctions membres non statiques
+  * disposent d'un paramètre fourni de manière implicite par le compilateur: le
+  * fameux pointeur @c this.
+  * Le plus facile est dés lors d'utiliser les expressions lambda pour connecter
+  * ce genre de fonctions à un signal sous une forme qui pourrait être proche de
+  * @include examples/connect_member.cpp
+  * @subsubsection using_memberConn Utiliser une connection comme donnée membre
+  *
+  * Il va de soi qu'il est tout à fait possible de déclarer la Tools::Connection
+  * qui représente la connexion entre un signal et une fonction membre (non statique)
+  * d'une classe comme étant un membre de la classe en question.
+  * 
+  * La classe Tools::Connection présente toutes les caractéristiques d'une classe
+  * ayant @em sémantique @em de @em valeur, dans le sens où
+  * - Elle est @em constructible @em par @em défaut (et ne représente alors aucune
+  *   connexion particulière;
+  * - elle est copiable;
+  * - elle est assignable;
+  *
+  * Il est donc tout à fait possible de garder une connexion construite par défaut
+  * tant que le besoin de l'utiliser ne se fait pas sentir, sous une forme qui pourrait
+  * être proche de
+  * @include examples/member_conn.cpp
+  *
+  * Mais le plus facile (et surtout le plus utile) est sans doute de connecter
+  * la fonction membre qui est destinée à servir de slot directement dans le constructeur.
+  *
+  * L'idéal serait de le faire dans la liste d'initialisation (comme c'est le cas
+  * pour l'initialisation de n'importe quelle donnée membre d'une classe), sous 
+  * une forme qui serait proche de
+  * @include examples/member_conn2.cpp
+  *
+  * Mais il n'y a strictement rien qui vous interdise d'attendre d'être dans
+  * le corps du constructeur pour le faire sous une forme qui serait alors proche.
+  * de @include examples/member_conn3.cpp
+  * @note Cette pratique est cependant déconseillée à cause de la mécanique mise
+  * en place pour la copie et l'affectation des connexions.
+  * @section sig_problem Quand l'émission de signaux pose problème
+  * 
+  * La plupart des projets sont des 
+  */

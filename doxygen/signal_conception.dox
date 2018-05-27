@@ -1,0 +1,74 @@
+/** @page signal_conception Notes de conception : les signaux et les slots:
+  *
+  * @section signal_difficulties difficultés à contourner
+  *
+  * De manière générale, nous n'aurons jamais aucun problème à utiliser des
+  * fonctions libres ou des fonctions membres statiques de classes comme slots 
+  * devant être connectés à un signal, parce que la capacité de faire appel à 
+  * ce genre de fonction ne dépend pas de l'existence d'un objet particulier.
+  *
+  * Par contre, nous devons prévoir le cas des fonctions membres non statiques 
+  * de classes.
+  * 
+  * En effet, une fonction membre non statique ne peut être appelée que tant que
+  * l'objet au départ duquel on l'appelle existe.  Tenter de faire appel à une 
+  * fonction membre non statique au départ d'un objet qui n'existe plus résultera
+  * systématiquement en une erreur de segmentation et fera donc systématiquement
+  * planter l'application.
+  *
+  * Il est possible de faire en sorte de contourner une partie du problème, en 
+  * s'assurant de manière conceptuelle que le signal soit détruit avant n'importe
+  * quel objet qui pourrait s'y connecter.
+  *
+  * Une telle garantie est relativement simple à mettre en place lorsque l'on a
+  * pas recours à l'allocation dynamique de la mémoire, car les règles de 
+  * construction et de destruction des objets sont clairs : les objets sont détruits
+  * dans l'ordre de leur déclaration et détruits dans l'ordre inverse de leur 
+  * déclaration lorsque l'on quitte la portée dans laquelle ils ont été créés.
+  *
+  * Ainsi, un code proche de 
+  * @code
+void foo(){
+    Object obj;
+    Signal sig;
+    sig.connect([&](auto param){obj.someStuf(param);});
+    //...
+}
+ * @endcode ou un code proche de 
+ * @code
+struct MyStruct{
+   Signal sig;
+};
+void foo(){
+   Object obj;
+   if(/* condition){
+        MyStruct str;
+        str.sig.connect([&](auto param){obj.someStuf(param);});
+        // ...
+   }
+   //...
+}
+  * @endcode ne posera aucun problème, car le signal sera détruit avant l'objet
+  * qui y est connecté, c'est garanti par la norme, et qu'il va de soi que, à 
+  * partir du moment où le signal est détruit, le pire qui puisse arriver, c'est
+  * que les slots qui y sont connectés ne soient plus jamais appelés.
+  *
+  * Nous ne pouvons cependant pas nous contenter d'imposer une contrainte conceptuelle
+  * qui dirait que tous les signaux doivent être détruits avant les objets qui
+  * y sont connectés avec des fonctions membres non statiques, car comme dirait
+  * @b scott @b meyers:
+  * <blockquote>Make Interfaces Easy to Use Correctly and Hard to Use Incorrectly</blockquote>
+  *
+  * En imposant cette restriction conceptuelle, non seulement, nous rendons notre
+  * interface "plus facile" à utiliser de manière incorrecte, mais nous restons
+  * confrontés au problème lié à tout ce qui a trait à la gestion dynamique de
+  * la mémoire.
+  * 
+  * Il serait en effet particulièrement ardu pour l'utilisateur de garantir que 
+  * le signal soit détruit @b avant les slots qui y sont connectés dans un 
+  * concept de gestion dynamique de la mémoire, ne serait-ce que à cause du fait
+  * que la durée de vie de telles ressources s'étend bien au delà de la portée
+  * dans laquelle elles sont déclarées et / ou récupérées.
+  *
+  * @section signal_solution Solution : un troisième larron
+  */

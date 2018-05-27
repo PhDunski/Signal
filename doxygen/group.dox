@@ -1,0 +1,28 @@
+/** @defgroup Tools Some usefull tools
+  *
+  */
+/** @internal{
+  */
+/** @defgroup ToolsDetails Implementation details used by tools
+  *
+  */
+/**@}*/
+/** @defgroup Signals The signal slot functionalities
+  *
+  */
+/** @defgroup Ecs All Ecs related functionalities
+  *
+  *
+  */
+/** @defgroup Entities Entities related functionnalities
+  *
+  */
+/** @defgroup Components Component related functionnalities
+  *
+  */
+/** @defgroup Systems System related functionnalities
+  *
+  */
+/** @defgroup Aliases useful type aliases
+  *
+  */

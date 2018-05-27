@@ -1,0 +1,11 @@
+/** @page configure_examples Configuring to build examples
+  *
+  * The main option used to enable/disable unit testing is the
+  * @c BUILD_EXAMPLES one
+  *
+  * As far as there are not (yet) any example, this option has no effect, but
+  * with time, it will allow more option to be shown.
+  *
+  * @sa @ref main_configure
+  */ 
+

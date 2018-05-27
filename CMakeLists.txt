@@ -1,0 +1,21 @@
+cmake_minimum_required(VERSION 3.8)
+project(Signal VERSION 1.0.0 )
+set(DESCRIPTION "A modern signal / slot system")
+add_subdirectory(3rdParty)
+include(cpack.cmake)
+add_subdirectory(lib)
+if(BUILD_TESTS)
+    add_subdirectory(tests)
+endif()
+option(BUILD_EXAMPLES "Should we build examples applications and libraries?" FALSE)
+if(BUILD_EXAMPLES)
+    add_subdirectory(examples)
+endif()
+find_package(Doxygen)
+option(BUILD_DOCUMENTATION 
+      "Create and install the HTML based API documentation (requires Doxygen)" 
+      ${DOXYGEN_FOUND})
+if(DOXYGEN_FOUND)
+    
+    add_subdirectory(doxygen)
+endif()

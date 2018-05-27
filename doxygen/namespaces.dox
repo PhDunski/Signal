@@ -1,0 +1,28 @@
+/** @namespace Tools
+  * @brief Provides some usefull (header only) tools
+  *
+  */
+/** @namespace Tools::Details
+  * @brief internal namespace used to deploy implementation details
+  *
+  */
+/** @namespace Ecs
+  * @brief global namespace for this project
+  *
+  */
+/** @namespace Ecs::Entities
+  * @brief holds all entities related functionnalities
+  *
+  */
+/** @namespace Ecs::Components
+  * @brief hold all component related functionnalities
+  *
+  */
+/** @namespace Ecs::Systems
+  * @brief hold all system related functionnalities
+  *
+  */
+/** @namespace Tests
+  * @brief namespace used to deploy unit tests requirements
+  *
+  */

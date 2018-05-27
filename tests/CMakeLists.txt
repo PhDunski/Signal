@@ -1,0 +1,7 @@
+if(BUILD_TESTS)
+    enable_testing()
+    file(GLOB SUBDIRS *.cmake)
+    foreach(sub ${SUBDIRS})
+        include(${sub})
+    endforeach()
+endif()

@@ -1,0 +1,12 @@
+/** @page configure_tests Configuring to build unit tests
+  *
+  * The main option used to enable/disable unit testing is the
+  * @c BUILD_TESTS one
+  * Once enabled, it provide more specifics unit testing option like
+  * - @c BUILD_TESTS_TOOLS enable unit test procedure for the Tools subdirectory 
+  *   (default: YES)
+  *     - @c BUILD_TESTS_SIGNAL enable unit test procedure for the Signal subproject
+  *   (default: YES)
+  *
+  * @sa @ref main_configure
+  */

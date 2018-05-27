@@ -1,0 +1,79 @@
+/** @mainpage  Signal subproject
+  * 
+  * Signal subproject aims to provide an easy to use,single header, header only library
+  * to generate signal / slot systems. 
+  *
+  * @section main_licence License
+  *
+  * This project is providen under the terms of the MIT license,
+  * you should have received a copy of this license
+  *
+  * Pleas see te Copyright.txt file for more information about this.
+  *
+  * @section main_requirement Requirements 
+  *
+  * The absolute minimum requirement is to use a C++14 (C++17 is best) compliant
+  * compiler if you consider to simply copy the `Signal.hpp` in your own
+  * project's include directory
+  *
+  * In addition, if you may have to use CMake (version >= 3.8 ) and Doxygen 
+  * (version >= 1.8.13) for specific uses.
+  * 
+  * @subsection main_testedtools  Used and tested tools
+  * This project is developped on a basic -- but up to date -- debian *testing* (codename **buster**) distribution 
+  *
+  * In addition some tests have already been done using a window 10 (64 bits) insallation.
+  * 
+  * @subsubsection main_compiler  Tested compiler
+  * On this day, the project has correctly been build and passed unit tests with: 
+  *
+  * - Gcc 7.3.0 (debian)
+  * - Gcc 8.1.0 (debian)
+  * - clang 6.0 (debian)
+  * - MinGW  (windows)
+  * - VisualStudio 2015 (windows)
+  *
+  * @subsubsection main_tools No mandatory tools
+  *
+  * Those tools have been tested in the mean time:
+  *
+  * - CMake 3.11.1 (debian)
+  * - doxygen 1.8.13 (debian)
+  *
+  * @note If you are able to compiling and passing unit tests on diferent
+  * architectures, with different compilers or with different tools versions,
+  * feel free add let me know it.  I'll be glad to add the information here.
+  * 
+  * @subsection main_building Building
+  * Builging FunEcs aims to be as easy as a "classic" three step building procedure:
+  * - configure the build uising @c cmake or one of its common tools
+  * - building from sources using @c make command
+  * - installing generated files using @c make @c install command
+  *
+  * @subsection main_doc Building documentation
+  * To build the documentation, please select the correct options when usign
+  * cmake and just use the @c make @c doc command
+  * 
+  * Installing the documentation at the correct place will be done with the
+  * @c make @c install @c doc command
+  *
+  *@section main_configure Configuring using CMake
+  *
+  * It is more convenient to use some "Gui based" cmake tool (like ccmake or 
+  * cmake-gui) to configure the FunEcs because of the large amount of options whose 
+  * may be defined, but you can -- of course -- considere to use the command line 
+  *CMake version.
+  *
+  * Here is an exhaustive options list you may use:
+  * - @c enable BUILD_TESTS (or not) the full unit test procedure. If set to "NO" all
+  *   unit test sub options disabled (default : YES) 
+  *   @sa @ref configure_tests
+  * - @c BUILD_EXAMPLES enables (or not) examples binaries generation (default : NO). If
+  *  @sa @ref configure_examples
+  *
+  * Some options depend of the Doxygen avaibility and should only be used if this tool
+  * is avaible:
+  * - @c BUILD_DOCUMENTATION enable or not the global doxygen documentation generation.
+  *   If Doxygen was found, it defaults to YES, but it defaults to NO otherwhise
+  * @sa @ref configure_dox
+  */
